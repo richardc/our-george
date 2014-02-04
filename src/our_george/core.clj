@@ -1,9 +1,23 @@
 (ns our-george.core
-  (:gen-class))
+  (:require [compojure.core :refer [context]]
+            [puppetlabs.trapperkeeper.core :refer [defservice]]
+            [compojure.core :refer [defroutes GET PUT ANY]]
+            [compojure.route :as route]
+            [clojure.tools.logging :as log]))
 
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  ;; work around dangerous default behaviour in Clojure
-  (alter-var-root #'*read-eval* (constantly false))
-  (println "Hello, World!"))
+(defroutes app
+  (GET "/" [] "Hello world")
+  (route/resources "/")
+  (route/not-found "Not found"))
+
+(defn on-shutdown
+  []
+  (log/info "Bye bye from Our George."))
+
+(defservice our-george-service
+  {:depends [[:config-service get-config]
+             [:webserver-service add-ring-handler]]
+   :provides [shutdown]}
+  (let [config (get-config)]
+    (add-ring-handler app "/"))
+  {:shutdown on-shutdown})
