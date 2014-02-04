@@ -5,8 +5,11 @@
             [compojure.route :as route]
             [clojure.tools.logging :as log]))
 
+(defn hello-world []
+  "Hello new world")
+
 (defroutes app
-  (GET "/" [] "Hello world")
+  (GET "/" [] (hello-world))
   (route/resources "/")
   (route/not-found "Not found"))
 
