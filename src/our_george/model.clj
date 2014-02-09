@@ -3,14 +3,16 @@
 
 (def Card s/Int)
 
-(def PlayerName s/Str)
+(def Score s/Int)
 
 (def PlayerState {:hand [Card]
-                  :score s/Int})
+                  :score Score})
+
+(def PlayerName s/Str)
 
 (def Game {:players {PlayerName PlayerState}
            :deck [Card]
-           :turn-order [s/Str]})
+           :turn-order [PlayerName]})
 
 ;; This tweaks turn-order.  As long as you call it once per player, as
 ;; deal-a-round does then this isn't a problem.
