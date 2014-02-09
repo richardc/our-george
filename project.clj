@@ -6,5 +6,7 @@
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [compojure "1.1.6"]
                  [puppetlabs/trapperkeeper "0.3.2"]
-                 [puppetlabs/trapperkeeper-webserver-jetty7 "0.3.2"]]
+                 [puppetlabs/trapperkeeper-webserver-jetty7 "0.3.2"]
+                 [prismatic/schema "0.2.0"]]
+  :repl-options {:init-ns our-george.core}
   :main puppetlabs.trapperkeeper.main)
