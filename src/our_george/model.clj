@@ -18,12 +18,9 @@
   [game :- Game]
   (let [player (first (:turn-order game))]
     (-> game
-        (assoc-in [:players player :hand]
-                  (conj (get-in game [:players player :hand])
-                        (first (:deck game))))
-        (assoc :deck (rest (:deck game)))
-        (assoc :turn-order (concat (rest (:turn-order game))
-                                   [(first (:turn-order game))])))))
+        (update-in [:players player :hand] conj (first (:deck game)))
+        (update-in [:deck] rest)
+        (update-in [:turn-order] #(concat (rest %) [(first %)])))))
 
 (s/defn deal-a-round :- Game
   [game :- Game]
