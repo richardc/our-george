@@ -8,5 +8,7 @@
                  [puppetlabs/trapperkeeper "0.3.2"]
                  [puppetlabs/trapperkeeper-webserver-jetty7 "0.3.2"]
                  [prismatic/schema "0.2.0"]]
+  :profiles {:dev {:dependencies [[midje "1.6.0"]]
+                   :plugins [[lein-midje "3.1.1"]]}}
   :repl-options {:init-ns our-george.core}
   :main puppetlabs.trapperkeeper.main)
