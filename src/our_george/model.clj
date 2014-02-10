@@ -25,11 +25,8 @@
 (s/defn deal-a-round :- Game
   "Deals a new card into all players hands"
   [game :- Game]
-  (loop [players (:turn-order game)
-         game game]
-    (if (empty? players) game
-        (recur (rest players)
-               (deal-a-card-to game (first players))))))
+  (let [players (:turn-order game)]
+    (reduce deal-a-card-to game players)))
 
 (s/defn make-game :- Game
   "Creates a new game and does initial deal"
