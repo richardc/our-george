@@ -28,4 +28,5 @@
       (is (thrown+? #(= :our-george.model/illegal-move (:type %))
                     (tell-a-story game "barney" 5 "Legendary"))))
     (testing "fred can tell a story"
-      (is (= "Yabba dabba") (:story (tell-a-story game "fred" 5 "Yabba Dabba"))))))
+      (is (= "Yabba Dabba"
+             (:story (tell-a-story game "fred" 5 "Yabba Dabba")))))))
