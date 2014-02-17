@@ -29,5 +29,14 @@
       (is (thrown+? #(= :our-george.model/illegal-move (:type %))
                     (tell-a-story game "barney" 5 "Legendary"))))
     (testing "fred can tell a story"
-      (is (= "Yabba Dabba"
-             (:story (tell-a-story game "fred" 5 "Yabba Dabba")))))))
+      (let [hand (get-in game [:players "fred" :hand])
+            card (first hand)
+            game (tell-a-story game "fred" card "Yabba Dabba")
+            hand (get-in game [:players "fred" :hand])]
+        (is (= "Yabba Dabba" (:story game)))
+        (is (= card (:story_card game)))
+        (is (= 4 (count hand)))))
+    (testing "must use a card from their hand"
+      (let [teds_card (first (get-in game [:players "ted" :hand]))]
+        (is (thrown+? #(= :our-george.model/illegal-move (:type %))
+                      (tell-a-story game "fred" teds_card "Suits")))))))

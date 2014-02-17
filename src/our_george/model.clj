@@ -20,6 +20,11 @@
            (s/optional-key :story) Story
            (s/optional-key :story_card) Card})
 
+(defn player-has-card?
+  [game player card]
+  (let [hand (get-in game [:players player :hand])]
+    (some #(= card %) hand)))
+
 (s/defn tell-a-story :- Game
   "The storyteller tells a story"
   [game :- Game
@@ -28,9 +33,13 @@
    story :- Story]
   (if-not (= player (:storyteller game))
     (throw+ {:type ::illegal-move} (str "it is not " player "'s turn")))
-  (-> game
-      (assoc-in [:story] story)
-      (assoc-in [:story_card] story_card)))
+  (if-not (player-has-card? game player story_card)
+    (throw+ {:type ::illegal-move} "Card not in players hand"))
+  (let [story_card? #(= story_card %)]
+    (-> game
+        (assoc-in [:story] story)
+        (assoc-in [:story_card] story_card)
+        (update-in [:players player :hand] #(remove story_card? %)))))
 
 (s/defn deal-a-card-to :- Game
   "Consumes a card from the deck, puts it into a players hand"
