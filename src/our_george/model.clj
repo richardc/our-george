@@ -1,5 +1,6 @@
 (ns our-george.model
-  (:require [schema.core :as s]))
+  (:require [schema.core :as s])
+  (:use [slingshot.slingshot :only [throw+ try+]]))
 
 (def Card s/Int)
 
@@ -10,9 +11,26 @@
 
 (def PlayerName s/Str)
 
+(def Story s/Str)
+
 (def Game {:players {PlayerName PlayerState}
            :deck [Card]
-           :turn-order [PlayerName]})
+           :turn-order [PlayerName]
+           :storyteller PlayerName
+           (s/optional-key :story) Story
+           (s/optional-key :story_card) Card})
+
+(s/defn tell-a-story :- Game
+  "The storyteller tells a story"
+  [game :- Game
+   player :- PlayerName
+   story_card :- Card
+   story :- Story]
+  (if-not (= player (:storyteller game))
+    (throw+ {:type ::illegal-move} (str "it is not " player "'s turn")))
+  (-> game
+      (assoc-in [:story] story)
+      (assoc-in [:story_card] story_card)))
 
 (s/defn deal-a-card-to :- Game
   "Consumes a card from the deck, puts it into a players hand"
@@ -33,5 +51,6 @@
   [players :- [PlayerName]]
   (let [game {:players (zipmap players (repeat {:hand '(), :score 0}))
               :deck (shuffle (range 52))
-              :turn-order players}]
+              :turn-order players
+              :storyteller (first players)}]
     (nth (iterate deal-a-round game) 5)))
