@@ -7,6 +7,7 @@
 (use-fixtures :once schema.test/validate-schemas)
 
 (deftest make-game-test
+  ;; this first test is only really testing schema works, so we'll only do it once
   (testing "make-game fails when given integers"
     (is (thrown-with-msg? clojure.lang.ExceptionInfo #"does not match schema"
                           (make-game [0 1 2 3]))))
@@ -23,8 +24,8 @@
 
 (deftest tell-a-story-test
   (let [players ["fred" "barney" "ted"]
-          game (make-game players)]
-    (testing "only the storyteller should be able to tell"
+        game (make-game players)]
+    (testing "only the storyteller should be able to tell-a-story"
       (is (thrown+? #(= :our-george.model/illegal-move (:type %))
                     (tell-a-story game "barney" 5 "Legendary"))))
     (testing "fred can tell a story"
